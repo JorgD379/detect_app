@@ -1,5 +1,5 @@
 from flask import Flask, request
-
+import model as m
 app = Flask(__name__)
 
 
@@ -19,4 +19,5 @@ def upload_file():
 
 
 if __name__ == '__main__':
+    model_params = m.init("model_path")
     app.run(debug=True)
