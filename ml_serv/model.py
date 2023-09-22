@@ -4,7 +4,7 @@ import supervision as sv
 import torch
 from transformers import DetrForObjectDetection, DetrImageProcessor
 
-def init():
+def init(path):
     # settings
     DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     CHECKPOINT = 'facebook/detr-resnet-50'
@@ -12,7 +12,7 @@ def init():
     IOU_TRESHOLD = 0.8
 
     image_processor = DetrImageProcessor.from_pretrained(CHECKPOINT)
-    model = DetrForObjectDetection.from_pretrained('/content/drive/MyDrive/model_detect_custom')
+    model = DetrForObjectDetection.from_pretrained(path)
     return image_processor, model, DEVICE, CONFIDENCE_TRESHOLD
 
 
