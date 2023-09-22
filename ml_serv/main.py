@@ -13,7 +13,7 @@ def upload_file():
 
         if file:
             img_stream = file.read()
-            nparr = np.fromstring(img_stream, np.uint8)
+            nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
             # Отображаем фотографию с помощью OpenCV

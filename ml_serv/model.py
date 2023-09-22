@@ -1,5 +1,4 @@
 import cv2
-import torch
 import supervision as sv
 import torch
 from transformers import DetrForObjectDetection, DetrImageProcessor
