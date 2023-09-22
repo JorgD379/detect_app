@@ -3,7 +3,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/api/ml', methods=['POST'])
 def upload_file():
     try:
         # Получаем файл из запроса
