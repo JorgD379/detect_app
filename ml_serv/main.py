@@ -23,6 +23,13 @@ def upload_file():
             lbl, scr = m.detect(model_params, image)
             lbl = preproc_res(lbl)
             scr = preproc_res(scr)
+
+            max_values = {}
+            for key, value in zip(lbl, scr):
+                if key not in max_values or value > max_values[key]:
+                    max_values[key] = value
+            lbl = list(max_values.keys())
+            scr = list(max_values.values())
             res = {'labels': lbl, 'score': scr}
             json_object = json.dumps(res)
             return json_object, 200
