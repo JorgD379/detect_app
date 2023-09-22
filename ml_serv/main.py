@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import model as m
 app = Flask(__name__)
 model_params = None
@@ -16,11 +16,9 @@ def upload_file():
             nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-            # Отображаем фотографию с помощью OpenCV
-            cv2.imshow('Received Image', image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-            return "ok", 200
+            res = m.detect(model_params, image)
+            print(res)
+            return res, 200
         else:
             return "Файл не найден", 400
     except Exception as e:

@@ -1,7 +1,10 @@
 import cv2
 import supervision as sv
 import torch
+import numpy as np
 from transformers import DetrForObjectDetection, DetrImageProcessor
+from flask import Flask, request, jsonify
+
 
 def init(path):
     # settings
@@ -12,13 +15,13 @@ def init(path):
 
     image_processor = DetrImageProcessor.from_pretrained(CHECKPOINT)
     model = DetrForObjectDetection.from_pretrained(path)
-    return image_processor, model, DEVICE, CONFIDENCE_TRESHOLD
+    return (image_processor, model, DEVICE, CONFIDENCE_TRESHOLD)
 
 
-def detect(image_processor, model, DEVICE, CONFIDENCE_TRESHOLD, image):
+def detect(model_params, image):
     with torch.no_grad():
         # load image and predict
-        image = cv2.imread('/content/24_10_03_38_878082-2023-09-09_35451.jpg')
+        image_processor, model, DEVICE, CONFIDENCE_TRESHOLD = model_params
         inputs = image_processor(images=image, return_tensors='pt')
         outputs = model(**inputs)
 
@@ -32,3 +35,5 @@ def detect(image_processor, model, DEVICE, CONFIDENCE_TRESHOLD, image):
 
     # annotate
     detections = sv.Detections.from_transformers(transformers_results=results)
+    # print(np.array(detections))
+    return jsonify(detections)
