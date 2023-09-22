@@ -1,0 +1,22 @@
+version: '3.4'
+services: 
+  ml_server:
+    container_name: ml_server
+    image: ${DOCKER_REGISTRY-}ml_server
+    build:
+     context: .
+     dockerfile: ml_serv/Dockerfile
+    networks:
+     - my-net
+    ports:
+     - "61572:5000"
+  
+    
+    
+networks:
+  my-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/28

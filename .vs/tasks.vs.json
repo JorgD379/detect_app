@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "задача-docker-compose",
+      "appliesTo": "docker-compose.yml",
+      "type": "launch"
+    }
+  ]
+}

@@ -1,11 +1,15 @@
-FROM ubuntu:22.04
+FROM python:3
 
 WORKDIR /solution
 COPY . .
 
 # dependencies
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install -y \
+        build-essential git python3 python3-pip
 
 RUN pip3 install -U pip
 RUN pip3 install --upgrade pip
