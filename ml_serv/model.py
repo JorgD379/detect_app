@@ -35,5 +35,12 @@ def detect(model_params, image):
 
     # annotate
     detections = sv.Detections.from_transformers(transformers_results=results)
-    # print(np.array(detections))
-    return jsonify(detections)
+    print(detections)
+    bbox = []
+    score = []
+    label = []
+    for box, _, scr, lbl, __ in detections:
+        bbox.append(list(box))
+        score.append(scr)
+        label.append(lbl)
+    return label, score
