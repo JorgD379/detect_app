@@ -9,7 +9,7 @@ model_params = None
 def upload_file():
     try:
         # Получаем файл из запроса
-        file = request.files['photo']
+        file = request.files['file']
 
         if file:
             img_stream = file.read()
