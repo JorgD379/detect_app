@@ -7,10 +7,9 @@ app = Flask(__name__)
 def upload_file():
     try:
         # Получаем файл из запроса
-        file = request.files['photo']
-
+        file = request.files['file']
         if file:
-
+            file.save("image.jpg")
             return "ok", 200
         else:
             return "Файл не найден", 400
@@ -19,4 +18,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.66.49")
