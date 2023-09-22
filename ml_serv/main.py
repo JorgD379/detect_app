@@ -1,16 +1,24 @@
-from flask import Flask, request
-
+import cv2
+import numpy as np
+from flask import Flask, request, jsonify
+import model as m
 app = Flask(__name__)
-
+model_params = None
 
 @app.route('/api/ml', methods=['POST'])
 def upload_file():
     try:
         # Получаем файл из запроса
         file = request.files['file']
+
         if file:
-            file.save("image.jpg")
-            return "ok", 200
+            img_stream = file.read()
+            nparr = np.frombuffer(img_stream, np.uint8)
+            image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+            res = m.detect(model_params, image)
+            print(res)
+            return res, 200
         else:
             return "Файл не найден", 400
     except Exception as e:
@@ -18,4 +26,5 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.66.49")
+    model_params = m.init("mdl")
+    app.run(debug=True)
