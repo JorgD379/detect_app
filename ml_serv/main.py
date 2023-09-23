@@ -114,7 +114,7 @@ def add_rectangle_to_image(opencv_image, rects, lbls):
     for rect in rects:
         x1, y1, x2, y2 = rect
         draw.rectangle([x1, y1, x2, y2], outline=(0, 255, 0), width=10)
-        font_size = 25  # Размер шрифта
+        font_size = 15  # Размер шрифта
         font = ImageFont.truetype("arial.ttf", font_size, )
         text = label_dict[str(lbls[cntr])]["code"] + "\n" + label_dict[str(lbls[cntr])]["name"]
         text_width, text_height = draw.textsize(text, font=font)

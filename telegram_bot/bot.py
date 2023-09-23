@@ -25,8 +25,8 @@ async def on_photo(message: types.Message):
 
     server_response = send_photo_to_server(photo_data)
 
-    res = "\n\n".join(server_response[0])
-    await message.answer(f"Ответ от сервера: {res}")
+    res = "\n".join(server_response[0])
+    await message.answer(f"Ответ от сервера:\n{res}")
 
     img_base64 = server_response[1]
     image_data = base64.b64decode(img_base64)
