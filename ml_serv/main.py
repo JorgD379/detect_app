@@ -80,7 +80,7 @@ def add_rectangle_to_image(image, rects):
     draw = ImageDraw.Draw(img)
     for rect in rects:
         x1, y1, x2, y2 = rect
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
+        draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
 
     img_byte_array = BytesIO()
     img.save(img_byte_array, format="JPEG")
