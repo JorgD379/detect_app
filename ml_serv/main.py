@@ -6,8 +6,6 @@ app = Flask(__name__)
 model_params = None
 import json
 
-new_image = 1
-
 # label_dict = {
 #     "1": "СПО250.14.190",
 #     "2": "СК50.02.01.411",
@@ -34,39 +32,49 @@ label_dict = {
     "1": "СПО250.14.190",
     "2": "СК50.02.01.411",
     "3": "СВП120.42.030",
-    "4": "СВП-120.00.060",
-    "5": "СВМ.37.060А",
 }
 
-def preproc_res(res):
-    return [str(l) for l in res]
+extra_info = {
+    "СПО250.14.190": {"name":"Фланец", "weight":"0.23"},
+    "СК50.02.01.411": {"name":"Кронштейн", "weight":"0.4", "extra": "1) Покрытие поверхности Грунт-Эмаль RAL 7025\n2) Гнуть по линии гравировки."},
+    "СВП120.42.030": {"name":"Шкив", "weight":"4.5", "extra": "1) Покрытие поверхности Грунт I - III группа по ИСО 12944, Эмаль I - III группа\n2) Сварная конструкция I класса по ОСТ 23.24.429-80."},
+}
+
+def preproc_res(inp):
+    res_bbx = []
+    for bbx in inp[0]:
+        res_bbx.append([str(l) for l in bbx])
+    res_lbl = [str(l) for l in inp[1]]
+    res_scr = [str(l) for l in inp[2]]
+    return res_bbx, res_lbl, res_scr
+
+# def del_duplicates(inp):
+#     bbxs, lbls, scrs = inp
+#     for i in range(len(bbxs)):
+#         for j in range(i+1, len(bbxs)):
+#             R = [max(bbxs[i][0],bbxs[j][0]), max(bbxs[i][1],bbxs[j][1]), min(bbxs[i][2],bbxs[j][2]), min(bbxs[i][3],bbxs[j][3])]
+#             if((R[0]+R[2])/2 > bbxs[i][0] and (R[0]+R[2])/2 < bbxs[i][2])
+#             print(R)
+#             break
 
 @app.route('/api/ml', methods=['POST'])
 def upload_file():
-    global new_image
     try:
-        # Получаем файл из запроса
         file = request.files['file']
 
         if file:
-            #file.save(str(new_image) + ".jpg")
-            #new_image = new_image + 1
             img_stream = file.read()
 
             nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-            lbl, scr = m.detect(model_params, image)
-            lbl = preproc_res(lbl)
-            scr = preproc_res(scr)
+            bbx, lbl, scr = m.detect(model_params, image)
+            print(bbx, lbl, scr)
 
-            max_values = {}
-            for key, value in zip(lbl, scr):
-                if key not in max_values or value > max_values[key]:
-                    max_values[key] = value
-            lbl = list(max_values.keys())
-            scr = list(max_values.values())
-            res = {'labels': lbl, 'score': scr}
+            # del_duplicates((bbx, lbl, scr))
+
+            bbx, lbl, scr = preproc_res((bbx, lbl, scr))
+            res = {'bboxes': bbx, 'labels': lbl, 'score': scr}
             json_object = json.dumps(res)
             return json_object, 200
         else:

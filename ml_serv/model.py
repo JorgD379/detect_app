@@ -35,7 +35,7 @@ def detect(model_params, image):
 
     # annotate
     detections = sv.Detections.from_transformers(transformers_results=results)
-    print(detections)
+    # print(detections)
     bbox = []
     score = []
     label = []
@@ -43,4 +43,4 @@ def detect(model_params, image):
         bbox.append(list(box))
         score.append(scr)
         label.append(lbl)
-    return label, score
+    return bbox, label, score
