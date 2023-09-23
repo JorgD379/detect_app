@@ -8,7 +8,7 @@ from aiogram import Bot, types, Dispatcher, executor
 
 logging.basicConfig(level=logging.INFO)
 
-bot = Bot(token='6460150280:AAFbRqfnRRY5Oy2CUrsmTH6wnhZRmGxr9wc')
+bot = Bot(token='6620645581:AAGhk251_IBznW5qzHiASZ515ISecteWmxU')
 dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
