@@ -1,10 +1,14 @@
+import base64
+from io import BytesIO
+
 import cv2
 import numpy as np
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import model as m
 app = Flask(__name__)
 model_params = None
 import json
+from PIL import Image, ImageDraw
 
 # label_dict = {
 #     "1": "СПО250.14.190",
@@ -27,18 +31,40 @@ import json
 #     "14": "CS120.07.442",
 #     "19": "CS120.01.413",
 # }
+titles_dict = {'code':"Деталь",
+               'name':"Имя",
+               'weight':"Масса",
+               'roughness':"Шероховатость",
+               'tolerances':"Допуски",
+               'surface':"Покрытие",
+               'extra':"Дополнительно"}
 
 label_dict = {
-    "1": "СПО250.14.190",
-    "2": "СК50.02.01.411",
-    "3": "СВП120.42.030",
+    "1": {"code":"СПО250.14.190",
+          "name":"Фланец",
+          "weight":"0.23",
+          "roughness":"Ra 25",
+          "tolerances":"H14, h14, ±t4/2"},
+    "2": {"code":"СК50.02.01.411",
+          "name":"Кронштейн",
+          "weight":"0.4",
+          "roughness": "Ra 12,5",
+          "tolerances": "H14, h14, ±AT14/2, ±t4/2",
+          "surface": "Покрытие поверхности Грунт-Эмаль RAL 7025",
+          "extra": "Гнуть по линии гравировки"},
+    "3": {"code":"СВП120.42.030",
+          "name":"Шкив",
+          "weight":"4.5",
+          "tolerances": "H14, h14, ±t4/2",
+          "surface": "Покрытие поверхности Грунт I-III группа по ИСО 12944, Эмаль I-III группа по ИСО 12944, RAL 7024 (цв. графитовый серый)",
+          "extra": "Сварная конструкция I класса по ОСТ 23.2.429-80"},
 }
 
-extra_info = {
-    "СПО250.14.190": {"name":"Фланец", "weight":"0.23"},
-    "СК50.02.01.411": {"name":"Кронштейн", "weight":"0.4", "extra": "1) Покрытие поверхности Грунт-Эмаль RAL 7025\n2) Гнуть по линии гравировки."},
-    "СВП120.42.030": {"name":"Шкив", "weight":"4.5", "extra": "1) Покрытие поверхности Грунт I - III группа по ИСО 12944, Эмаль I - III группа\n2) Сварная конструкция I класса по ОСТ 23.24.429-80."},
-}
+def desc_to_str(desc, l):
+    res = "Метка: " + l + "\n"
+    for title in desc:
+        res+= titles_dict[title] + ": " + desc[title] + "\n"
+    return res
 
 def preproc_res(inp):
     res_bbx = []
@@ -48,14 +74,18 @@ def preproc_res(inp):
     res_scr = [str(l) for l in inp[2]]
     return res_bbx, res_lbl, res_scr
 
-# def del_duplicates(inp):
-#     bbxs, lbls, scrs = inp
-#     for i in range(len(bbxs)):
-#         for j in range(i+1, len(bbxs)):
-#             R = [max(bbxs[i][0],bbxs[j][0]), max(bbxs[i][1],bbxs[j][1]), min(bbxs[i][2],bbxs[j][2]), min(bbxs[i][3],bbxs[j][3])]
-#             if((R[0]+R[2])/2 > bbxs[i][0] and (R[0]+R[2])/2 < bbxs[i][2])
-#             print(R)
-#             break
+
+def add_rectangle_to_image(image, rects):
+    img = Image.open(image)
+    draw = ImageDraw.Draw(img)
+    for rect in rects:
+        x1, y1, x2, y2 = rect
+        draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
+
+    img_byte_array = BytesIO()
+    img.save(img_byte_array, format="JPEG")
+    img_base64 = base64.b64encode(img_byte_array.getvalue()).decode('utf-8')
+    return img_base64
 
 @app.route('/api/ml', methods=['POST'])
 def upload_file():
@@ -64,18 +94,24 @@ def upload_file():
 
         if file:
             img_stream = file.read()
-
             nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
             bbx, lbl, scr = m.detect(model_params, image)
-            print(bbx, lbl, scr)
-
-            # del_duplicates((bbx, lbl, scr))
-
+            processed_image_data = add_rectangle_to_image(file, bbx)
             bbx, lbl, scr = preproc_res((bbx, lbl, scr))
-            res = {'bboxes': bbx, 'labels': lbl, 'score': scr}
-            json_object = json.dumps(res)
+
+            uniq = []
+            for l in lbl:
+                desc = label_dict[l]
+                tmp = desc_to_str(desc, l)
+                if tmp not in uniq:
+                    print(tmp)
+                    uniq.append(tmp)
+
+            # Отправьте изображение и данные в формате JSON
+            res = {'bboxes': bbx, 'labels': lbl, 'description': uniq, 'image': processed_image_data}
+            json_object = jsonify(res)
             return json_object, 200
         else:
             return "Файл не найден", 400
