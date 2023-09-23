@@ -11,10 +11,10 @@
 
 Сервер с моделью:
 1) Скачиваем и открываем папку ml_serv
-3) Устанавливаем библиотеки из requirements.txt (pip install -r requirements.txt)
-4) Скачиваем папку mdl из Google Drive (https://drive.google.com/drive/folders/1ldgy6HGPNlm93mqLo4_68_CBdkaVIRtN)
-5) Создаем папку app в ml_serv и помещаем в нее папку mdl (ml_serv/app/ml_serv)
-6) Запускаем файл main.py
+2) Устанавливаем библиотеки из requirements.txt (pip install -r requirements.txt)
+3) Скачиваем папку mdl из Google Drive (https://drive.google.com/drive/folders/1ldgy6HGPNlm93mqLo4_68_CBdkaVIRtN)
+4) Создаем папку app в ml_serv и помещаем в нее папку mdl (ml_serv/app/mdl)
+5) Запускаем файл main.py
 
 Мобильное приложение: 
 1) Необходио клонировать проект с репозитория https://github.com/maksimov-m/test_detect
