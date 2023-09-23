@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\ml_serv",
-    "\\nginx"
+    "\\nginx",
+    "\\telegram_bot"
   ],
-  "SelectedNode": "\\ml_serv\\main.py",
+  "SelectedNode": "\\telegram_bot\\bot.py",
   "PreviewInSolutionExplorer": false
 }

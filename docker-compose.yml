@@ -12,7 +12,19 @@ services:
           - ml_server
     ports:
      - "8080:5000"
-     
+  telegram_bot:
+    container_name: telegram_bot
+    image: ${DOCKER_REGISTRY-}telegram_bot
+    depends_on:
+     - ml_server
+    build:
+     context: .
+     dockerfile: telegram_bot/Dockerfile
+    networks:
+      my-network:
+        aliases:
+          - telegram_bot
+
   nginx:
     image: nginx:1.13.7
     depends_on:
@@ -20,7 +32,10 @@ services:
     ports:
      - 80:80
     networks:
-      - my-network
+      my-network:
+       aliases:
+       - nginx
+     
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     

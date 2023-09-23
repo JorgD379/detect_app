@@ -32,7 +32,7 @@ async def on_photo(message: types.Message):
     await message.answer(f"Ответ от сервера: {server_response}")
 
 def send_photo_to_server(photo_data):
-    server_url = 'http://127.0.0.1:5000/api/ml'
+    server_url = 'http://nginx:80/api/ml'
     files = {'file': ('photo.jpg', photo_data)}
     response = requests.post(server_url, files=files)
     if response.status_code == 200:
