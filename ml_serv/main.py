@@ -83,7 +83,7 @@ def add_rectangle_to_image(image, rects):
         draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
 
     img_byte_array = BytesIO()
-    img.save(img_byte_array, format="JPEG")
+    img.save(img_byte_array, format="PNG")
     img_base64 = base64.b64encode(img_byte_array.getvalue()).decode('utf-8')
     return img_base64
 
