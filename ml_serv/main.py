@@ -8,7 +8,7 @@ import model as m
 app = Flask(__name__)
 model_params = None
 import json
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 # label_dict = {
 #     "1": "СПО250.14.190",
@@ -107,13 +107,19 @@ def preproc_res(inp):
     return res_bbx, res_lbl, res_scr
 
 
-def add_rectangle_to_image(image, rects):
-    img = Image.open(image)
+def add_rectangle_to_image(opencv_image, rects, lbls):
+    img = Image.fromarray(cv2.cvtColor(opencv_image, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(img)
+    cntr = 0
     for rect in rects:
         x1, y1, x2, y2 = rect
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
-
+        draw.rectangle([x1, y1, x2, y2], outline=(0, 255, 0), width=10)
+        font_size = 25  # Размер шрифта
+        font = ImageFont.truetype("arial.ttf", font_size, )
+        text = label_dict[str(lbls[cntr])]["code"] + "\n" + label_dict[str(lbls[cntr])]["name"]
+        text_width, text_height = draw.textsize(text, font=font)
+        draw.text(((x1+x2-text_width)/2, (y1+y2-text_height)/2), text, fill="red", font=font)
+        cntr += 1
     img_byte_array = BytesIO()
     img.save(img_byte_array, format="PNG")
     img_base64 = base64.b64encode(img_byte_array.getvalue()).decode('utf-8')
@@ -128,9 +134,9 @@ def upload_file():
             img_stream = file.read()
             nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
+            image = cv2.resize(image, (600, 600))
             bbx, lbl, scr = m.detect(model_params, image)
-            processed_image_data = add_rectangle_to_image(file, bbx)
+            processed_image_data = add_rectangle_to_image(image, bbx, lbl)
             bbx, lbl, scr = preproc_res((bbx, lbl, scr))
 
             uniq = []
