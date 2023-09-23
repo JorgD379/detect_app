@@ -6,9 +6,8 @@
 --------------
 
 
-----ЗАПУСК----
-
-
+ЗАПУСК
+--------
 Сервер с моделью:
 1) Скачиваем и открываем папку ml_serv
 2) Устанавливаем библиотеки из requirements.txt (pip install -r requirements.txt)
@@ -28,7 +27,7 @@
    - docker build --tag 'tg_serv'
    - docker run --detach 'tg_serv'
 4) Открыть телеграм бота https://t.me/praktitest2009bot 
---------------
+--------
 
 
 ----РАБОТА----
