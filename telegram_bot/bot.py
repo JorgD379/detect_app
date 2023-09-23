@@ -10,7 +10,6 @@ logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token='6460150280:AAFbRqfnRRY5Oy2CUrsmTH6wnhZRmGxr9wc')
 dp = Dispatcher(bot)
-a = None
 
 @dp.message_handler(commands=['start'])
 async def on_start(message: types.Message):
