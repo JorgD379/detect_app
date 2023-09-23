@@ -63,8 +63,6 @@ def upload_file():
     try:
         file = request.files['file']
 
-        request.stream
-
         if file:
             img_stream = file.read()
 
