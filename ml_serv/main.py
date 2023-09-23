@@ -10,6 +10,7 @@ model_params = None
 import json
 from PIL import Image, ImageDraw, ImageFont
 
+a = None
 
 # label_dict = {
 #     "1": "СПО250.14.190",
