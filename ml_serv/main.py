@@ -6,6 +6,7 @@ app = Flask(__name__)
 model_params = None
 import json
 
+
 # label_dict = {
 #     "1": "СПО250.14.190",
 #     "2": "СК50.02.01.411",
@@ -61,6 +62,8 @@ def preproc_res(inp):
 def upload_file():
     try:
         file = request.files['file']
+
+        request.stream
 
         if file:
             img_stream = file.read()

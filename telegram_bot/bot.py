@@ -8,14 +8,8 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token='6620645581:AAGhk251_IBznW5qzHiASZ515ISecteWmxU')
 dp = Dispatcher(bot)
 label_dict = {
-    "1": "СПО250.14.190",
-    "2": "СК50.02.01.411",  # Добавьте другие расшифровки
-    "3": "СК50.01.01.404",
-    "4": "СК30.01.01.03.403",
-    "5": "СК30.01.01.02.402",
-    "6": "СК20.01.01.02.402",
-    # Добавьте расшифровки для других цифр, если необходимо
-}
+    "1": "СПО250.14.190",    "2": "СК50.02.01.411",    "3": "СВП120.42.030",}
+
 @dp.message_handler(commands=['start'])
 async def on_start(message: types.Message):
     await message.answer("Привет! Отправь мне фотографию, и я отправлю ее на сервер и пришлю тебе ответ.")
@@ -29,7 +23,7 @@ async def on_photo(message: types.Message):
 
     server_response = send_photo_to_server(photo_data)
 
-    await message.answer(f"Ответ от сервера: {server_response}")
+    await message.answer(f"Ответ от сервера: \n{server_response}")
 
 def send_photo_to_server(photo_data):
     server_url = 'http://nginx:80/api/ml'
