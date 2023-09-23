@@ -1,22 +1,29 @@
 import cv2
 import numpy as np
 from flask import Flask, request, jsonify
+import os
 import model as m
 app = Flask(__name__)
 model_params = None
 import json
+
+new_image = 1
 
 def preproc_res(res):
     return [str(l) for l in res]
 
 @app.route('/api/ml', methods=['POST'])
 def upload_file():
+    global new_image
     try:
         # Получаем файл из запроса
         file = request.files['file']
 
         if file:
+            #file.save(str(new_image) + ".jpg")
+            #new_image = new_image + 1
             img_stream = file.read()
+
             nparr = np.frombuffer(img_stream, np.uint8)
             image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
@@ -34,5 +41,5 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    model_params = m.init("mdl")
-    app.run(debug=True, host="192.168.66.49")
+    model_params = m.init(f"app/mdl")
+    app.run(debug=True, host="0.0.0.0")

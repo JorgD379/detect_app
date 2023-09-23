@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\ml_serv",
+    "\\nginx"
   ],
-  "SelectedNode": "\\C:\\Users\\ravil\\Source\\Repos\\detect_app",
+  "SelectedNode": "\\ml_serv\\main.py",
   "PreviewInSolutionExplorer": false
 }
